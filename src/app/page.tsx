@@ -12,11 +12,11 @@ export default function Home() {
     <>
       <Navbar />
       <main className="flex-1">
+        <ApplicationForm />
         <Hero />
         <Properties />
         <WhyChooseUs />
         <Testimonials />
-        <ApplicationForm />
         <CTA />
       </main>
       <Footer />
