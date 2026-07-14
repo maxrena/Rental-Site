@@ -1,0 +1,29 @@
+{
+  "apphosting": {
+    "backendId": "rental-site-backend",
+    "rootDir": "/",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
+    ]
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "rental-site-backend",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}
