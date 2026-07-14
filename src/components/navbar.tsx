@@ -83,6 +83,14 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 bg-white/95 backdrop-blur-3xl z-40 md:hidden"
           >
+            {/* Close button inside overlay */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 transition-colors"
+              aria-label="Close menu"
+            >
+              <X size={20} strokeWidth={2.5} />
+            </button>
             <div className="flex flex-col items-center justify-center h-full gap-8 px-6">
               {navLinks.map((link, i) => (
                 <motion.a

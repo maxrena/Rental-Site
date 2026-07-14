@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Banknote, Calendar, FileText, Zap, Building2, ChevronDown } from "lucide-react";
+import { Check, Banknote, Calendar, FileText, Zap, Building2 } from "lucide-react";
 
 const terms = [
   {
@@ -36,14 +36,6 @@ const terms = [
   },
 ];
 
-const propertyOptions = [
-  "Modern Loft in Chelsea",
-  "Sunlit Studio Apartment",
-  "Penthouse with Terrace",
-  "Garden Duplex Retreat",
-  "Cozy Brownstone Flat",
-  "Not sure — show me options",
-];
 
 export default function ApplicationForm() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -53,7 +45,6 @@ export default function ApplicationForm() {
     email: "",
     phone: "",
     currentAddress: "",
-    property: "",
     moveInDate: "",
     employer: "",
     annualIncome: "",
@@ -75,8 +66,26 @@ export default function ApplicationForm() {
     return () => observer.disconnect();
   }, []);
 
+  const formatPhone = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 10);
+    if (digits.length < 4) return digits;
+    if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  };
+
+  const formatIncome = (value: string) => {
+    const digits = value.replace(/\D/g, "");
+    if (!digits) return "";
+    const num = parseInt(digits, 10);
+    return `$${num.toLocaleString("en-US")}`;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "phone" ? formatPhone(value) : name === "annualIncome" ? formatIncome(value) : value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -104,8 +113,7 @@ export default function ApplicationForm() {
           </h2>
           <p className="text-lg text-muted leading-relaxed max-w-[480px] mx-auto mb-8">
             Thank you, <strong>{formData.fullName}</strong>! We&apos;ve received your
-            application for <strong>{formData.property || "a property"}</strong>.
-            Our team will review it and get back to you within 24 hours.
+            application. Our team will review it and get back to you within 24 hours.
           </p>
 
           {/* Submitted info summary */}
@@ -118,7 +126,7 @@ export default function ApplicationForm() {
                 { label: "Full Name", value: formData.fullName },
                 { label: "Email", value: formData.email },
                 { label: "Phone", value: formData.phone },
-                { label: "Property", value: formData.property },
+
                 { label: "Move-in Date", value: formData.moveInDate },
                 { label: "Employer", value: formData.employer },
               ].map(
@@ -143,7 +151,6 @@ export default function ApplicationForm() {
                 email: "",
                 phone: "",
                 currentAddress: "",
-                property: "",
                 moveInDate: "",
                 employer: "",
                 annualIncome: "",
@@ -225,7 +232,7 @@ export default function ApplicationForm() {
                   <div className="mt-6 pt-6 border-t border-zinc-100">
                     <div className="flex items-center gap-2 text-xs text-muted">
                       <Building2 size={14} strokeWidth={1.5} />
-                      Property managed by Havenly Rentals LLC
+                      Property managed by Century 21st Estates
                     </div>
                   </div>
                 </div>
@@ -285,36 +292,6 @@ export default function ApplicationForm() {
                         placeholder="(555) 123-4567"
                         className="w-full px-4 py-3 text-sm bg-soft border border-zinc-200 rounded-xl text-foreground placeholder:text-muted/50 outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/40 transition-all duration-300"
                       />
-                    </div>
-
-                    {/* Property Interested In */}
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-foreground mb-1.5">
-                        Property Interested In <span className="text-red-400">*</span>
-                      </label>
-                      <div className="relative">
-                        <select
-                          name="property"
-                          required
-                          value={formData.property}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 text-sm bg-soft border border-zinc-200 rounded-xl text-foreground outline-none appearance-none focus:ring-2 focus:ring-accent/20 focus:border-accent/40 transition-all duration-300"
-                        >
-                          <option value="" disabled>
-                            Select a property...
-                          </option>
-                          {propertyOptions.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown
-                          size={16}
-                          strokeWidth={1.5}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
-                        />
-                      </div>
                     </div>
 
                     {/* Current Address */}
@@ -402,10 +379,11 @@ export default function ApplicationForm() {
                         className="mt-0.5 w-4 h-4 rounded border-zinc-300 text-accent focus:ring-accent/20 accent-accent"
                       />
                       <span className="text-sm text-muted leading-relaxed">
-                        I acknowledge the rental terms: <strong>$950 deposit</strong> ($650
-                        refundable + $300 non-refundable), <strong>$750/month rent</strong>,
-                        payment by <strong>check only</strong>, <strong>1-year lease</strong>,
-                        and I am responsible for all <strong>utilities</strong>.
+                        I acknowledge the rental terms:{" "}
+                        <strong>$950 deposit</strong> ($650 refundable + $300 non-refundable),{" "}
+                        <strong>$750/month rent</strong>, payment by <strong>check only</strong>,{" "}
+                        <strong>1-year lease</strong>, and I am responsible for all{" "}
+                        <strong>utilities</strong>.
                         <span className="text-red-400"> *</span>
                       </span>
                     </label>
